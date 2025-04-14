@@ -25,6 +25,16 @@ android {
                 "proguard-rules.pro"
             )
         }
+        debug {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+        create("profile") {
+            initWith(getByName("debug"))
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -33,10 +43,16 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
-
+//    implementation(files("/Users/fauzanakmalmahdi/Documents/Main/Flutter Project/flutter_module1/build/host/outputs/repo/com/example/flutter_module1/flutter_release/1.0/flutter_release-1.0.aar"))
+    debugImplementation("com.example.flutter_module1:flutter_debug:1.0")
+    releaseImplementation("com.example.flutter_module1:flutter_release:1.0")
+    add("profileImplementation", "com.example.flutter_module1:flutter_profile:1.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
