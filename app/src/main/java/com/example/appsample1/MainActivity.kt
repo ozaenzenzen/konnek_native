@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
 //            clientSecret = "1dc8e065-2915-4b4e-8df2-45040e8314bd",
 //            flavor = "staging",
 //        )
-        InterModule().activate()
+//        InterModule().activate()
 
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)

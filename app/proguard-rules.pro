@@ -11,6 +11,10 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+# Keep Gson classes
+-keep class com.squareup.retrofit2.** { *; }
+-keepattributes Signature
+-keepattributes *Annotation*
 
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
