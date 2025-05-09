@@ -72,43 +72,6 @@ dependencies {
 }
 
 afterEvaluate {
-//    publishing {
-//        publications {
-//            create<MavenPublication>("release") {
-//                from(components["release"])
-//                groupId = "com.example.appsample1"
-//                artifactId = "konnek-android"
-//                version = "1.0.0"
-//            }
-//        }
-////        publications {
-////            create<MavenPublication>("release") {
-////                from(components["release"])
-////
-////                // Add dependency information to POM file
-////                pom {
-////                    withXml {
-////                        val dependenciesNode = asNode().appendNode("dependencies")
-////
-////                        // Add all implementation dependencies
-////                        configurations["implementation"].allDependencies.forEach {
-////                            if (it.name != "unspecified") {
-////                                val dependencyNode = dependenciesNode.appendNode("dependency")
-////                                dependencyNode.appendNode("groupId", it.group)
-////                                dependencyNode.appendNode("artifactId", it.name)
-////                                dependencyNode.appendNode("version", it.version)
-////                            }
-////                        }
-////                    }
-////                }
-////            }
-////        }
-//        repositories {
-//            maven {
-//                url = uri("$buildDir/build/repo")
-//            }
-//        }
-//    }
     publishing {
         publications {
             create<MavenPublication>("release") {
@@ -121,14 +84,18 @@ afterEvaluate {
 
         repositories {
             maven {
-                url = uri("${rootProject.buildDir}/local-maven")
-//                url = uri("${rootProject.buildDir}/app/build")
-//                url = uri("${rootProject.buildDir}")
+                println("Message rootProject: ${rootProject}")  // String interpolation
+                println("Message rootDir: ${rootDir}")  // String interpolation
+                println("Message rootProject: ${rootProject}")  // String interpolation
+                println("Message rootProject.buildDir: ${rootProject.buildDir}")  // String interpolation
+                println("Message rootProject.projectDir: ${rootProject.projectDir}")  // String interpolation
+                url = uri("${rootProject.projectDir}/app/build")
             }
         }
     }
 }
 
+//This is works
 //publishing {
 //    publications {
 //        create<MavenPublication>("release") {
@@ -143,76 +110,6 @@ afterEvaluate {
 //    repositories {
 //        maven {
 //            url = uri("$rootDir/repository") // Define a local repository directory
-//        }
-//    }
-//}
-
-//publishing {
-//    publications {
-//        create<MavenPublication>("release") {
-//            groupId = "com.example.appsample1" // e.g., com.example
-//            artifactId = "konnek-android"
-//            version = "1.0.0" // Your library's version
-//
-////            // Directly reference your AAR file
-//            artifact("$buildDir/outputs/aar/app-release.aar")
-////            artifact("$buildDir/outputs/aar/file.aar")
-//        }
-//    }
-//    repositories {
-//        maven {
-//            url = uri("$rootDir/repository") // Define a local repository directory
-//        }
-//    }
-//}
-
-//publishing {
-//    publications {
-//        create<MavenPublication>("release") {
-//            from(components["release"])
-//            groupId = "com.example.appsample1"
-//            artifactId = "konnek-android"
-//            version = "1.0.0"
-//        }
-//    }
-//    repositories {
-//        maven {
-//            url = uri("$buildDir/repo")
-//        }
-//    }
-//}
-
-//val runtimeClasspath by configurations
-//
-//tasks.register<Copy>("bundleExternalLibs") {
-//    from(runtimeClasspath.filter { it.name.endsWith(".jar") })
-//    into("$buildDir/intermediates/aar_main_jar/libs/")
-//}
-//
-//afterEvaluate {
-//    tasks.named("assembleRelease").configure {
-//        dependsOn("bundleExternalLibs")
-//    }
-//
-//    publishing {
-//        publications {
-//            create<MavenPublication>("release") { // You can name this publication as you like
-//                from(components["assembleRelease"]) // Or "debug" if you want to publish debug builds
-//
-////            groupId = "your.group.id" // Replace with your desired group ID
-////            artifactId = "your-library-name" // Replace with your library's artifact ID
-////            version = "1.0.0" // Replace with your library's version
-//                groupId = "com.example.appsample1" // Replace with your desired group ID
-//                artifactId = "konnek-native" // Replace with your library's artifact ID
-//                version = "1.0.0" // Replace with your library's version
-//            }
-//        }
-//
-//        repositories {
-//            maven {
-//                url = uri("$buildDir/repo") // Example: Publish to a local repository for testing
-//                // In a real scenario, you'd configure a remote Maven repository (e.g., Maven Central, JCenter, a private repository)
-//            }
 //        }
 //    }
 //}
