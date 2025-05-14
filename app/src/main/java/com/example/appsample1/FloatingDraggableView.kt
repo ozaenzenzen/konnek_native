@@ -416,7 +416,7 @@ class FloatingButtonView2(context: Context) : androidx.coordinatorlayout.widget.
     }
 }
 
-class FloatingButtonView(context: Context) : CoordinatorLayout(context) {
+class FloatingButtonView3(context: Context) : CoordinatorLayout(context) {
 
     private val draggableFab: FloatingActionButton
     private var dX: Float = 0f
@@ -491,5 +491,85 @@ class FloatingButtonView(context: Context) : CoordinatorLayout(context) {
     // Method to get the underlying FloatingActionButton if needed
     fun getFab(): FloatingActionButton {
         return draggableFab
+    }
+}
+
+class FloatingButtonView(context: Context) : FrameLayout(context) {
+// class FloatingButtonView(context: Context) : View(context) {
+    private var downRawX = 0f
+    private var downRawY = 0f
+    private var dX = 0f
+    private var dY = 0f
+
+    // Initialize the button with basic properties
+    private val button: Button
+
+    init {
+        button = Button(context).apply {
+            text = "Open Flutter"
+            setBackgroundColor(Color.BLUE)
+            setTextColor(Color.WHITE)
+            setOnClickListener {
+                FlutterEngineHelper.launchFlutter(context)
+            }
+            layoutParams = LayoutParams(
+                LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT
+            ).apply {
+                gravity = Gravity.CENTER
+            }
+        }
+
+        addView(button)
+
+        setOnTouchListener { view, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    downRawX = event.rawX
+                    downRawY = event.rawY
+                    dX = view.x - downRawX
+                    dY = view.y - downRawY
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    // Prevent the button from going out of screen bounds
+                    val newX = event.rawX + dX
+                    val newY = event.rawY + dY
+
+                    // Ensure the button stays within the screen bounds
+                    val maxX = (view.rootView.width - view.width).toFloat()
+                    val maxY = (view.rootView.height - view.height).toFloat()
+
+                    val clampedX = newX.coerceIn(0f, maxX)
+                    val clampedY = newY.coerceIn(0f, maxY)
+
+                    view.animate()
+                        .x(clampedX)
+                        .y(clampedY)
+                        .setDuration(0)
+                        .start()
+                }
+            }
+            true
+        }
+    }
+
+    // Method to update the button text
+    fun setButtonText(text: String) {
+        button.text = text
+    }
+
+    // Method to update the button's background color
+    fun setButtonBackgroundColor(color: Int) {
+        button.setBackgroundColor(color)
+    }
+
+    // Method to set custom size for the button
+    fun setButtonSize(width: Int, height: Int) {
+        button.layoutParams = LayoutParams(width, height)
+    }
+
+    // Method to remove the floating button from the screen
+    fun remove() {
+        (parent as? ViewGroup)?.removeView(this)
     }
 }
