@@ -4,29 +4,18 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.view.Gravity
-import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.FrameLayout
-import android.widget.FrameLayout.LayoutParams
 import android.widget.ImageButton
 import android.widget.ImageView
-import androidx.annotation.NonNull
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.content.ContextCompat
 import com.example.appsample1.component.MovableFloatingActionButton
 import com.example.appsample1.component.MovableFloatingActionButton2
-import com.example.appsample1.component.MovableFloatingActionButton3
 import com.example.appsample1.component.MovableFloatingActionButton4
 import com.example.appsample1.support.base64ToBitmap
-import com.google.gson.Gson
-import io.flutter.embedding.engine.FlutterEngine
-import io.flutter.embedding.engine.FlutterEngineCache
-import io.flutter.embedding.engine.dart.DartExecutor
-import io.flutter.plugin.common.BinaryMessenger
-import io.flutter.plugin.common.MethodChannel
 import androidx.core.graphics.toColorInt
+import com.konnek_native.R
 
 object KonnekNative {
     internal var clientId: String = ""
@@ -80,7 +69,7 @@ object KonnekNative {
 
         //        var btn = MovableFloatingActionButton2(context).apply {
         btn.apply {
-            setImageResource(com.example.appsample1.R.drawable.ic_konnek)
+            setImageResource(R.drawable.ic_konnek)
             scaleType = ImageView.ScaleType.FIT_CENTER // or CENTER_CROP, CENTER_INSIDE
             setBackgroundColor(bgColor)
             setPadding(

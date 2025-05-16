@@ -6,7 +6,8 @@ plugins {
 }
 
 android {
-    namespace = "com.example.appsample1"
+    // namespace = "com.example.appsample1"
+    namespace = "com.konnek_native"
     compileSdk = 35
 
     defaultConfig {
@@ -55,9 +56,9 @@ android {
 
 dependencies {
 //    implementation(files("/Users/fauzanakmalmahdi/Documents/Main/Flutter Project/flutter_module1/build/host/outputs/repo/com/example/flutter_module1/flutter_release/1.0/flutter_release-1.0.aar"))
-    debugImplementation("com.example.flutter_module1:flutter_debug:1.0")
-    releaseImplementation("com.example.flutter_module1:flutter_release:1.0")
-    add("profileImplementation", "com.example.flutter_module1:flutter_profile:1.0")
+    debugImplementation("com.konnek_native.core:flutter_debug:1.0")
+    releaseImplementation("com.konnek_native.core:flutter_release:1.0")
+    add("profileImplementation", "com.konnek_native.core:flutter_profile:1.0")
     api("com.squareup.retrofit2:converter-gson:2.9.0") {
         isTransitive = true
     }
@@ -76,7 +77,8 @@ afterEvaluate {
         publications {
             create<MavenPublication>("release") {
                 from(components["release"])
-                groupId = "com.example.appsample1"
+//                groupId = "com.example.appsample1"
+                groupId = "com.konnek_native"
                 artifactId = "konnek-android"
                 version = "1.0.0"
             }

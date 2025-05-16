@@ -8,7 +8,7 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
-import com.example.appsample1.R
+import com.konnek_native.R
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View.OnTouchListener

@@ -18,7 +18,7 @@ import androidx.core.graphics.drawable.toDrawable
 import androidx.core.graphics.toColorInt
 import androidx.core.view.marginEnd
 import androidx.core.view.setPadding
-import com.example.appsample1.R
+import com.konnek_native.R
 import kotlin.math.abs
 
 class MovableFloatingActionButton4(context: Context) : FrameLayout(context), View.OnTouchListener {
