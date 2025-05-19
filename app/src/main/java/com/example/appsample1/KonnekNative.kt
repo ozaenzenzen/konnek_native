@@ -15,6 +15,7 @@ import com.example.appsample1.component.MovableFloatingActionButton2
 import com.example.appsample1.component.MovableFloatingActionButton4
 import com.example.appsample1.support.base64ToBitmap
 import androidx.core.graphics.toColorInt
+import com.example.appsample1.FlutterEngineHelper.envInit
 import com.konnek_native.R
 
 object KonnekNative {
@@ -31,6 +32,7 @@ object KonnekNative {
         clientId = id
         clientSecret = secret
         flavor = flavorData
+        envInit(flavor)
         FlutterEngineHelper.ensureEngine(context.applicationContext)
     }
 

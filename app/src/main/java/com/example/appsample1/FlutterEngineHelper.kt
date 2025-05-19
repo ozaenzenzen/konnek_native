@@ -2,6 +2,8 @@ package com.example.appsample1
 
 import android.content.Context
 import com.example.appsample1.support.DataGetConfig
+import com.example.appsample1.support.EnvironmentConfig
+import com.example.appsample1.support.Flavor
 import com.example.appsample1.support.KonnekService
 import com.google.gson.Gson
 import io.flutter.embedding.android.FlutterActivity
@@ -117,6 +119,26 @@ object FlutterEngineHelper {
                 .backgroundMode(FlutterActivityLaunchConfigs.BackgroundMode.transparent)
                 .build(context)
             context.startActivity(intent)
+        }
+    }
+
+    fun envInit(flavor: String) {
+        when (flavor) {
+            "development" -> {
+                EnvironmentConfig.flavor = Flavor.DEVELOPMENT
+            }
+
+            "staging" -> {
+                EnvironmentConfig.flavor = Flavor.STAGING
+            }
+
+            "production" -> {
+                EnvironmentConfig.flavor = Flavor.PRODUCTION
+            }
+
+            else -> {
+                EnvironmentConfig.flavor = Flavor.STAGING
+            }
         }
     }
 }
