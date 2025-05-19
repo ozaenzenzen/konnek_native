@@ -16,7 +16,7 @@ import com.example.appsample1.component.MovableFloatingActionButton4
 import com.example.appsample1.support.base64ToBitmap
 import androidx.core.graphics.toColorInt
 import com.example.appsample1.FlutterEngineHelper.envInit
-import com.konnek_native.R
+import com.konneknative.R
 
 object KonnekNative {
     internal var clientId: String = ""

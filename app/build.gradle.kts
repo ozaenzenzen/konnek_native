@@ -8,7 +8,7 @@ plugins {
 
 android {
     // namespace = "com.example.appsample1"
-    namespace = "com.konnek_native"
+    namespace = "com.konneknative"
     compileSdk = 35
 
     defaultConfig {
@@ -57,9 +57,9 @@ android {
 
 dependencies {
 //    implementation(files("/Users/fauzanakmalmahdi/Documents/Main/Flutter Project/flutter_module1/build/host/outputs/repo/com/example/flutter_module1/flutter_release/1.0/flutter_release-1.0.aar"))
-    debugImplementation("com.konnek_native.core:flutter_debug:1.0")
-    releaseImplementation("com.konnek_native.core:flutter_release:1.0")
-    add("profileImplementation", "com.konnek_native.core:flutter_profile:1.0")
+    debugImplementation("com.konneknative.core:flutter_debug:1.0")
+    releaseImplementation("com.konneknative.core:flutter_release:1.0")
+    add("profileImplementation", "com.konneknative.core:flutter_profile:1.0")
     api("com.squareup.retrofit2:converter-gson:2.9.0") {
         isTransitive = true
     }
@@ -79,13 +79,84 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 }
 
+val splitPOM: MavenPom.() -> Unit = {
+    name.set("Konnek Native")
+    packaging = "aar"
+    description.set("Official Konnek Android SDK")
+    // url.set("https://github.com/splitio/android-client")
+
+    licenses {
+        license {
+            name.set("The Apache License, Version 2.0")
+            url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+        }
+    }
+
+    developers {
+        developer {
+            id.set("ozaenzenzen")
+            name.set("Fauzan Akmal Mahdi")
+            email.set("fauzan.akmal@sprintasia.co.id")
+        }
+    }
+
+    scm {
+        connection.set("scm:git:git@github.com:ozaenzenzen/konnek_native.git")
+        developerConnection.set("scm:git@github.com:ozaenzenzen/konnek_native.git")
+        url.set("https://github.com/ozaenzenzen/konnek_native.git")
+    }
+}
+
+
+//val sourcesJar by tasks.registering(Jar::class) {
+//    archiveClassifier.set("sources")
+//    from(android.sourceSets["main"].java.srcDirs)
+//}
+//
+//val javadocJar by tasks.registering(Jar::class) {
+//    archiveClassifier.set("javadoc")
+//    from(tasks["javadoc"])
+//}
+
+//val generateRepo by tasks.register<Zip>("generateRepo") {
+//    val publishTask = tasks.named(
+//        "publishReleasePublicationToMyrepoRepository",
+//        PublishToMavenRepository::class.java
+//    )
+//    from(publishTask.map { it.repository.url })
+//    into("mylibrary")
+//    archiveFileName.set("mylibrary.zip")
+//}
+
 afterEvaluate {
     publishing {
         publications {
             create<MavenPublication>("release") {
                 from(components["release"])
 //                groupId = "com.example.appsample1"
-                groupId = "com.konnek_native"
+                groupId = "com.konneknative"
+                artifactId = "konnek-android"
+                version = "1.0.0"
+
+//                artifact(sourcesJar.get())
+//                artifact(javadocJar.get())
+//                artifact(generateRepo)
+
+//                tasks {
+//                    generateRepo
+//                }
+
+//                pom {
+//                    splitPOM
+//                }
+
+                // artifact("${rootProject.projectDir}/app/build/entou/${project.name}-release.aar")
+                // artifact("$buildDir/outputs/aar/${project.name}-release.aar")
+                // artifact("$buildDir/outputs/aar/app-release.aar")
+            }
+            create<MavenPublication>("development") {
+                from(components["release"])
+                groupId = "com.konneknative"
                 artifactId = "konnek-android"
                 version = "1.0.0"
             }
@@ -93,6 +164,7 @@ afterEvaluate {
 
         repositories {
             maven {
+                println("Message buildDir: ${buildDir}")  // String interpolation
                 println("Message rootProject: ${rootProject}")  // String interpolation
                 println("Message rootDir: ${rootDir}")  // String interpolation
                 println("Message rootProject: ${rootProject}")  // String interpolation
