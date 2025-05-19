@@ -1,6 +1,8 @@
 package com.example.appsample1
 
 import android.content.Context
+import com.example.appsample1.support.DataGetConfig
+import com.example.appsample1.support.KonnekService
 import com.google.gson.Gson
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.android.FlutterActivityLaunchConfigs
@@ -8,6 +10,9 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.FlutterEngineCache
 import io.flutter.embedding.engine.dart.DartExecutor
 import io.flutter.plugin.common.MethodChannel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
 
 object FlutterEngineHelper {
     private var flutterEngine: FlutterEngine? = null
@@ -25,14 +30,49 @@ object FlutterEngineHelper {
 
                 FlutterEngineCache.getInstance().put(ENGINE_ID, this)
             }
-            // callConfig()
-            println("[FlutterEngineHelper][ensureEngine]")
+            callConfigViaNative()
+            // println("[FlutterEngineHelper][ensureEngine]")
         }
     }
 
-    private fun callConfig() {
+    var initConfigData: String = ""
+
+    private fun callConfigViaNative() {
+        // println("[FlutterEngineHelper][callConfigViaNative]")
+        KonnekService().getConfig(
+            KonnekNative.clientId,
+            onSuccess = { value: String ->
+                initConfigData = value
+                val output: Map<*, *> = jsonStringToMap(value)
+                KonnekNative.triggerFloatingUIChanges.invoke(output["data"] as Map<*, *>)
+            },
+            onFailed = { errorMessage: String ->
+                // println("[FlutterEngineHelper][callConfigViaNative][onFailed] errorMessage: $errorMessage")
+            },
+        )
+    }
+
+    private fun jsonStringToMap(jsonString: String): Map<*, *> {
+        val jsonObject = JSONObject(jsonString)
+        val map = mutableMapOf<String, Any>()
+        val keys = jsonObject.keys()
+
+        while (keys.hasNext()) {
+            val key = keys.next()
+            val value = jsonObject.get(key)
+            when (value) {
+                is JSONObject -> map[key] = jsonStringToMap(value.toString())
+//                 is JSONArray -> map[key] = jsonArrayToList(value)
+                else -> map[key] = value
+            }
+        }
+        return map.toMap()
+    }
+
+    private fun callConfig(engineInput: FlutterEngine) {
         println("[FlutterEngineHelper][callConfig]")
-        val engine = FlutterEngineCache.getInstance().get(ENGINE_ID)
+        // val engine = FlutterEngineCache.getInstance().get(ENGINE_ID)
+        val engine = engineInput
         if (engine != null) {
             channel = MethodChannel(
                 engine.dartExecutor.binaryMessenger,
@@ -42,22 +82,22 @@ object FlutterEngineHelper {
             arguments["clientId"] = KonnekNative.clientId
             arguments["clientSecret"] = KonnekNative.clientSecret
             arguments["flavor"] = KonnekNative.flavor
-            println("[FlutterEngineHelper][initializeSDK] arguments: $arguments")
+            // println("[FlutterEngineHelper][callConfig] arguments: $arguments")
             val sendData: String = Gson().toJson(arguments)
-            println("[FlutterEngineHelper][initializeSDK] sendData: $sendData")
+            // println("[FlutterEngineHelper][callConfig] sendData: $sendData")
             channel.invokeMethod("clientConfigChannel", sendData)
-            channel.invokeMethod("fetchConfigData", "")
+            if (initConfigData != "") {
+                channel.invokeMethod("fetchConfigData", initConfigData)
+            }
 
             channel.setMethodCallHandler { call, result ->
-                println("[FlutterEngineHelper][onMethodCall]: 1 $call")
-                println("[FlutterEngineHelper][onMethodCall]: 2 $result")
+//                println("[FlutterEngineHelper][onMethodCall]: 1 $call")
+//                println("[FlutterEngineHelper][onMethodCall]: 2 $result")
                 if (call.method == "configData") {
-                    println("[FlutterEngineHelper][onMethodCall]: configData called")
-                    println("[FlutterEngineHelper][onMethodCall]: call ${call.arguments}")
+//                    println("[FlutterEngineHelper][onMethodCall]: configData called")
+//                    println("[FlutterEngineHelper][onMethodCall]: call ${call.arguments}")
                     val map: Map<*, *> = call.arguments as Map<*, *>
-                    println("[FlutterEngineHelper][onMethodCall]: call map $map")
-
-                    KonnekNative.callbackConfig.invoke(map)
+                    // println("[FlutterEngineHelper][onMethodCall]: call map $map")
 
                     result.success("success")
                 } else {
@@ -70,45 +110,13 @@ object FlutterEngineHelper {
     fun launchFlutter(context: Context) {
         val engine = FlutterEngineCache.getInstance().get(ENGINE_ID)
         if (engine != null) {
-            channel = MethodChannel(
-                engine.dartExecutor.binaryMessenger,
-                CHANNEL_ID,
-            )
-            val arguments = hashMapOf<String, String>()
-            arguments["clientId"] = KonnekNative.clientId
-            arguments["clientSecret"] = KonnekNative.clientSecret
-            arguments["flavor"] = KonnekNative.flavor
-            println("[FlutterEngineHelper][initializeSDK] arguments: $arguments")
-            val sendData: String = Gson().toJson(arguments)
-            println("[FlutterEngineHelper][initializeSDK] sendData: $sendData")
-            channel.invokeMethod("clientConfigChannel", sendData)
-            channel.invokeMethod("fetchConfigData", "")
-
-
-            channel.setMethodCallHandler { call, result ->
-                println("[FlutterEngineHelper][onMethodCall]: 1 $call")
-                println("[FlutterEngineHelper][onMethodCall]: 2 $result")
-                if (call.method == "configData") {
-                    println("[FlutterEngineHelper][onMethodCall]: configData called")
-                    println("[FlutterEngineHelper][onMethodCall]: call ${call.arguments}")
-                    val map: Map<*, *> = call.arguments as Map<*, *>
-                    println("[FlutterEngineHelper][onMethodCall]: call map $map")
-
-                    KonnekNative.callbackConfig.invoke(map)
-
-                    result.success("success")
-                } else {
-                    result.notImplemented()
-                }
-            }
+            callConfig(engine)
 
             val intent = FlutterActivity
                 .withCachedEngine(ENGINE_ID)
                 .backgroundMode(FlutterActivityLaunchConfigs.BackgroundMode.transparent)
                 .build(context)
-            println("[FlutterEngineHelper][launchFlutter] intent defined")
             context.startActivity(intent)
-            println("[FlutterEngineHelper][launchFlutter] start activity called")
         }
     }
 }

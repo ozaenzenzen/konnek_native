@@ -3,6 +3,7 @@ plugins {
     id("com.android.library")
     alias(libs.plugins.kotlin.android)
     id("maven-publish") // Make sure this line is present
+    id("kotlin-parcelize")
 }
 
 android {
@@ -60,6 +61,12 @@ dependencies {
     releaseImplementation("com.konnek_native.core:flutter_release:1.0")
     add("profileImplementation", "com.konnek_native.core:flutter_profile:1.0")
     api("com.squareup.retrofit2:converter-gson:2.9.0") {
+        isTransitive = true
+    }
+    api("com.squareup.retrofit2:retrofit:2.9.0") {
+        isTransitive = true
+    }
+    api("com.squareup.okhttp3:logging-interceptor:4.8.0") {
         isTransitive = true
     }
     implementation(libs.androidx.core.ktx)

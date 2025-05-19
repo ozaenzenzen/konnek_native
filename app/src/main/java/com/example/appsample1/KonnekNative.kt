@@ -56,8 +56,7 @@ object KonnekNative {
         return btn
     }
 
-    // lateinit var callbackConfig: (Map<*, *>) -> Map<*, *>
-    lateinit var callbackConfig: (Map<*, *>) -> Unit
+    lateinit var triggerFloatingUIChanges: (Map<*, *>) -> Unit
 
     fun getFloatingButton2(context: Context): ImageButton {
         var bgColor = Color.WHITE
@@ -92,7 +91,7 @@ object KonnekNative {
             }
         }
 
-        callbackConfig = { datas ->
+        triggerFloatingUIChanges = { datas ->
             if (datas != null) {
                 println("[callbackConfig]: datas $datas")
                 bgColor = Color.parseColor(datas.get("button_color") as String?)
@@ -159,9 +158,8 @@ object KonnekNative {
             }
         }
 
-        callbackConfig = { datas ->
+        triggerFloatingUIChanges = { datas ->
             if (datas != null) {
-                println("[callbackConfig]: datas $datas")
                 // bgColor = Color.parseColor(datas.get("button_color") as String?)
                 bgColor = datas["button_color"] as String? ?: ""
                 // textColor = Color.parseColor(datas.get("text_button_color") as String?)
@@ -191,10 +189,7 @@ object KonnekNative {
         }
 
         // Jika pakai constraint layout
-        println("btn.layoutParams: ${btn.layoutParams}")
-        println("btn.layoutParams is ConstraintLayout.LayoutParams: ${btn.layoutParams is ConstraintLayout.LayoutParams}")
         if (btn.layoutParams is ConstraintLayout.LayoutParams) {
-            println("cek ok")
             val layoutParams = btn.layoutParams as ConstraintLayout.LayoutParams
             layoutParams.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
             layoutParams.rightToRight = ConstraintLayout.LayoutParams.PARENT_ID
