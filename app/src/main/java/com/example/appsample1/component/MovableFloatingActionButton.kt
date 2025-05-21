@@ -6,9 +6,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
 import android.view.ViewGroup.MarginLayoutParams
-import com.example.appsample1.FlutterEngineHelper
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import io.flutter.embedding.engine.FlutterEngine
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
