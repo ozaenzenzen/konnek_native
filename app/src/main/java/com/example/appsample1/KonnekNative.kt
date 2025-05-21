@@ -23,6 +23,7 @@ object KonnekNative {
     internal var clientSecret: String = ""
     internal var flavor: String = ""
 
+     @JvmStatic
     fun initializeSDK2(
         context: Context,
         id: String,
@@ -122,6 +123,7 @@ object KonnekNative {
         return btn
     }
 
+     @JvmStatic
     fun getFloatingButton3(context: Context): FrameLayout {
 //        var bgColor = Color.WHITE
         var bgColor = "#ffffff"
@@ -179,7 +181,7 @@ object KonnekNative {
                     bitmap?.let { output ->
                         setButtonIcon2(output)
                     } ?: run {
-                        setButtonIcon(R.drawable.ic_konnek)
+                        // setButtonIcon(R.drawable.ic_konnek)
                     }
                     background = GradientDrawable().apply {
                         shape = GradientDrawable.RECTANGLE
