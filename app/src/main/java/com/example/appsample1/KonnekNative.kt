@@ -23,7 +23,7 @@ object KonnekNative {
     internal var clientSecret: String = ""
     internal var flavor: String = ""
 
-     @JvmStatic
+    @JvmStatic
     fun initializeSDK2(
         context: Context,
         id: String,
@@ -123,7 +123,11 @@ object KonnekNative {
         return btn
     }
 
-     @JvmStatic
+    fun disposeEngine() {
+        FlutterEngineHelper.disposeEngine()
+    }
+
+    @JvmStatic
     fun getFloatingButton3(context: Context): FrameLayout {
 //        var bgColor = Color.WHITE
         var bgColor = "#ffffff"

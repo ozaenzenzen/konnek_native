@@ -1,6 +1,13 @@
 package com.example.appsample1
 
+import android.app.Activity
+import android.app.Application
 import android.content.Context
+import android.os.Bundle
+import android.util.Log
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import com.example.appsample1.support.DataGetConfig
 import com.example.appsample1.support.EnvironmentConfig
 import com.example.appsample1.support.Flavor
@@ -22,6 +29,64 @@ object FlutterEngineHelper {
     private const val CHANNEL_ID = "konnek_native"
     private lateinit var channel: MethodChannel
 
+    private fun registerLifecycle(context: Context) {
+        val application = context.applicationContext as Application
+        application.registerActivityLifecycleCallbacks(object :
+            Application.ActivityLifecycleCallbacks {
+            override fun onActivityStarted(activity: Activity) {
+                // Start engine here if appropriate
+                Log.d("MyLifecycleManager", "Activity started: ${activity.localClassName}")
+            }
+
+            override fun onActivityStopped(activity: Activity) {
+                // Stop engine here
+                disposeEngine()
+                Log.d("MyLifecycleManager", "Activity stopped: ${activity.localClassName}")
+            }
+
+            override fun onActivityDestroyed(activity: Activity) {
+                disposeEngine()
+                Log.d("MyLifecycleManager", "Activity destroyed: ${activity.localClassName}")
+            }
+
+            // Required empty implementations
+            override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
+            override fun onActivityResumed(activity: Activity) {}
+            override fun onActivityPaused(activity: Activity) {}
+            override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
+        })
+    }
+
+    private fun registerLifecycleV2(lifecycle: Lifecycle) {
+        if (lifecycle.currentState == Lifecycle.State.DESTROYED) {
+            Log.w("MyLibraryEngine", "Cannot start engine: lifecycle already destroyed")
+            return
+        }
+
+        // Start the engine
+        Log.d("MyLibraryEngine", "Engine started")
+
+        // Observe lifecycle to stop when needed
+        lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onStop(owner: LifecycleOwner) {
+                disposeEngine()
+            }
+
+            override fun onDestroy(owner: LifecycleOwner) {
+                disposeEngine()
+                lifecycle.removeObserver(this)
+            }
+        })
+    }
+
+    fun disposeEngine() {
+//        Log.d("disposeEngine", "Flutter Engine disposed")
+//        if (flutterEngine != null) {
+//            flutterEngine?.destroy()
+//            flutterEngine = null
+//        }
+    }
+
     fun ensureEngine(context: Context) {
         if (flutterEngine == null) {
             flutterEngine = FlutterEngine(context.applicationContext).apply {
@@ -32,6 +97,7 @@ object FlutterEngineHelper {
 
                 FlutterEngineCache.getInstance().put(ENGINE_ID, this)
             }
+//            registerLifecycle(context)
             callConfigViaNative()
             // println("[FlutterEngineHelper][ensureEngine]")
         }
@@ -102,6 +168,10 @@ object FlutterEngineHelper {
                     // println("[FlutterEngineHelper][onMethodCall]: call map $map")
 
                     result.success("success")
+                } else if (call.method == "disposeEngine") {
+//                    println("[FlutterEngineHelper][disposeEngine]")
+                    // disposeEngine()
+                    result.success("success dispose engine")
                 } else {
                     result.notImplemented()
                 }
