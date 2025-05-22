@@ -99,7 +99,11 @@ object KonnekNative {
                 println("[callbackConfig]: datas $datas")
                 bgColor = Color.parseColor(datas.get("button_color") as String?)
                 textColor = Color.parseColor(datas.get("text_button_color") as String?)
-                textButton = datas.get("text_button_color") as String? ?: ""
+                if (datas["text_status"] == true) {
+                    textButton = datas["text_button"] as String? ?: ""
+                } else {
+                    textButton = ""
+                }
                 iconButton = datas.get("ios_icon") as String? ?: ""
                 val bitmap = iconButton.base64ToBitmap()
 
@@ -172,7 +176,13 @@ object KonnekNative {
                 bgColor = datas["button_color"] as String? ?: ""
                 // textColor = Color.parseColor(datas.get("text_button_color") as String?)
                 textColor = datas["text_button_color"] as String? ?: ""
-                textButton = datas["text_button"] as String? ?: ""
+                println("datas[\"text_status\"] ${datas["text_status"]}")
+                println("datas[\"text_button\"] ${datas["text_button"]}")
+                if (datas["text_status"] == true) {
+                    textButton = datas["text_button"] as String? ?: ""
+                } else {
+                    textButton = ""
+                }
                 iconButton = datas["ios_icon"] as String? ?: ""
                 val bitmap = iconButton.base64ToBitmap()
 
