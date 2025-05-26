@@ -16,6 +16,7 @@ import com.example.appsample1.component.MovableFloatingActionButton4
 import com.example.appsample1.support.base64ToBitmap
 import androidx.core.graphics.toColorInt
 import com.example.appsample1.FlutterEngineHelper.envInit
+import com.example.appsample1.support.AppLoggerCS
 import com.konneknative.R
 
 object KonnekNative {
@@ -35,6 +36,7 @@ object KonnekNative {
         flavor = flavorData
         envInit(flavor)
         FlutterEngineHelper.ensureEngine(context.applicationContext)
+        AppLoggerCS.useLogger = true
     }
 
     fun getFloatingButton(context: Context): MovableFloatingActionButton {
