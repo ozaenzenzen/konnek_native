@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import com.example.appsample1.support.AppLoggerCS
 import com.example.appsample1.support.DataGetConfig
 import com.example.appsample1.support.EnvironmentConfig
 import com.example.appsample1.support.Flavor
@@ -39,8 +40,7 @@ object FlutterEngineHelper {
             }
 
             override fun onActivityStopped(activity: Activity) {
-                // Stop engine here
-                disposeEngine()
+//                disposeEngine()
                 Log.d("MyLifecycleManager", "Activity stopped: ${activity.localClassName}")
             }
 
@@ -50,56 +50,54 @@ object FlutterEngineHelper {
             }
 
             // Required empty implementations
-            override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
-            override fun onActivityResumed(activity: Activity) {}
-            override fun onActivityPaused(activity: Activity) {}
-            override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
-        })
-    }
-
-    private fun registerLifecycleV2(lifecycle: Lifecycle) {
-        if (lifecycle.currentState == Lifecycle.State.DESTROYED) {
-            Log.w("MyLibraryEngine", "Cannot start engine: lifecycle already destroyed")
-            return
-        }
-
-        // Start the engine
-        Log.d("MyLibraryEngine", "Engine started")
-
-        // Observe lifecycle to stop when needed
-        lifecycle.addObserver(object : DefaultLifecycleObserver {
-            override fun onStop(owner: LifecycleOwner) {
-                disposeEngine()
+            override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+                Log.d("MyLifecycleManager", "Activity created: ${activity.localClassName}")
             }
 
-            override fun onDestroy(owner: LifecycleOwner) {
-                disposeEngine()
-                lifecycle.removeObserver(this)
+            override fun onActivityResumed(activity: Activity) {
+                Log.d("MyLifecycleManager", "Activity resumed: ${activity.localClassName}")
+            }
+
+            override fun onActivityPaused(activity: Activity) {
+                Log.d("MyLifecycleManager", "Activity paused: ${activity.localClassName}")
+            }
+
+            override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+                Log.d(
+                    "MyLifecycleManager",
+                    "Activity onActivitySaveInstanceState: ${activity.localClassName}"
+                )
             }
         })
     }
 
     fun disposeEngine() {
-//        Log.d("disposeEngine", "Flutter Engine disposed")
-//        if (flutterEngine != null) {
+        Log.d("disposeEngine", "Flutter Engine disposed")
+        if (flutterEngine != null || FlutterEngineCache.getInstance().contains(ENGINE_ID)) {
+            FlutterEngineCache.getInstance().clear();
 //            flutterEngine?.destroy()
 //            flutterEngine = null
-//        }
+        }
     }
 
     fun ensureEngine(context: Context) {
-        if (flutterEngine == null) {
-            flutterEngine = FlutterEngine(context.applicationContext).apply {
-                navigationChannel.setInitialRoute("/")
-                dartExecutor.executeDartEntrypoint(
-                    DartExecutor.DartEntrypoint.createDefault()
-                )
+        try {
+            Log.d("ensureEngine", "flutterEngine: $flutterEngine")
+            if (flutterEngine == null) {
+                flutterEngine = FlutterEngine(context.applicationContext).apply {
+                    navigationChannel.setInitialRoute("/")
+                    dartExecutor.executeDartEntrypoint(
+                        DartExecutor.DartEntrypoint.createDefault()
+                    )
 
-                FlutterEngineCache.getInstance().put(ENGINE_ID, this)
+                    FlutterEngineCache.getInstance().put(ENGINE_ID, this)
+                }
+                registerLifecycle(context)
+                callConfigViaNative()
+                // println("[FlutterEngineHelper][ensureEngine]")
             }
-//            registerLifecycle(context)
-            callConfigViaNative()
-            // println("[FlutterEngineHelper][ensureEngine]")
+        } catch (e: Exception) {
+            Log.d("ensureEngine", "exception: ${e.toString()}")
         }
     }
 
@@ -138,7 +136,7 @@ object FlutterEngineHelper {
     }
 
     private fun callConfig(engineInput: FlutterEngine) {
-        println("[FlutterEngineHelper][callConfig]")
+        AppLoggerCS.debugLog("[FlutterEngineHelper][callConfig]")
         // val engine = FlutterEngineCache.getInstance().get(ENGINE_ID)
         val engine = engineInput
         if (engine != null) {
@@ -180,15 +178,22 @@ object FlutterEngineHelper {
     }
 
     fun launchFlutter(context: Context) {
-        val engine = FlutterEngineCache.getInstance().get(ENGINE_ID)
-        if (engine != null) {
-            callConfig(engine)
+        try {
+            val engine = FlutterEngineCache.getInstance().get(ENGINE_ID)
+            if (engine != null) {
+                callConfig(engine)
 
-            val intent = FlutterActivity
-                .withCachedEngine(ENGINE_ID)
-                .backgroundMode(FlutterActivityLaunchConfigs.BackgroundMode.transparent)
-                .build(context)
-            context.startActivity(intent)
+                val intent = FlutterActivity
+                    .withCachedEngine(ENGINE_ID)
+                    .backgroundMode(FlutterActivityLaunchConfigs.BackgroundMode.transparent)
+                    .build(context)
+                context.startActivity(intent)
+            } else {
+                FlutterEngineCache.getInstance().put(ENGINE_ID, flutterEngine)
+                launchFlutter(context)
+            }
+        } catch (e: Exception) {
+            Log.d("launchFlutter", "exception: ${e.toString()}")
         }
     }
 
