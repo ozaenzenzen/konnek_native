@@ -1,22 +1,17 @@
 plugins {
-//    alias(libs.plugins.android.application)
     id("com.android.library")
     alias(libs.plugins.kotlin.android)
-    id("maven-publish") // Make sure this line is present
+    id("maven-publish")
     id("kotlin-parcelize")
 }
 
 android {
-    // namespace = "com.example.appsample1"
     namespace = "com.konneknative"
     compileSdk = 35
 
     defaultConfig {
-//        applicationId = "com.example.appsample1"
         minSdk = 24
         targetSdk = 35
-//        versionCode = 1
-//        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -39,9 +34,9 @@ android {
                 "proguard-rules.pro"
             )
         }
-        create("profile") {
-            initWith(getByName("debug"))
-        }
+//        create("profile") {
+//            initWith(getByName("debug"))
+//        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -53,13 +48,25 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
 }
 
 dependencies {
-//    implementation(files("/Users/fauzanakmalmahdi/Documents/Main/Flutter Project/flutter_module1/build/host/outputs/repo/com/example/flutter_module1/flutter_release/1.0/flutter_release-1.0.aar"))
-    debugImplementation("com.konneknative.core:flutter_debug:1.0")
-    releaseImplementation("com.konneknative.core:flutter_release:1.0")
-    add("profileImplementation", "com.konneknative.core:flutter_profile:1.0")
+//    implementation(project(":flutter"))
+//    debugImplementation("com.konneknative.core:flutter_debug:1.0")
+//    releaseImplementation("com.konneknative.core:flutter_release:1.0")
+    implementation("com.konneknative.core:flutter_release:1.0")
+//    add("profileImplementation", "com.konneknative.core:flutter_profile:1.0")
     api("com.squareup.retrofit2:converter-gson:2.9.0") {
         isTransitive = true
     }
@@ -107,52 +114,14 @@ val splitPOM: MavenPom.() -> Unit = {
     }
 }
 
-
-//val sourcesJar by tasks.registering(Jar::class) {
-//    archiveClassifier.set("sources")
-//    from(android.sourceSets["main"].java.srcDirs)
-//}
-//
-//val javadocJar by tasks.registering(Jar::class) {
-//    archiveClassifier.set("javadoc")
-//    from(tasks["javadoc"])
-//}
-
-//val generateRepo by tasks.register<Zip>("generateRepo") {
-//    val publishTask = tasks.named(
-//        "publishReleasePublicationToMyrepoRepository",
-//        PublishToMavenRepository::class.java
-//    )
-//    from(publishTask.map { it.repository.url })
-//    into("mylibrary")
-//    archiveFileName.set("mylibrary.zip")
-//}
-
 afterEvaluate {
     publishing {
         publications {
             create<MavenPublication>("release") {
                 from(components["release"])
-//                groupId = "com.example.appsample1"
                 groupId = "com.konneknative"
                 artifactId = "konnek-android"
                 version = "1.0.0"
-
-//                artifact(sourcesJar.get())
-//                artifact(javadocJar.get())
-//                artifact(generateRepo)
-
-//                tasks {
-//                    generateRepo
-//                }
-
-//                pom {
-//                    splitPOM
-//                }
-
-                // artifact("${rootProject.projectDir}/app/build/entou/${project.name}-release.aar")
-                // artifact("$buildDir/outputs/aar/${project.name}-release.aar")
-                // artifact("$buildDir/outputs/aar/app-release.aar")
             }
             create<MavenPublication>("development") {
                 from(components["release"])
@@ -175,22 +144,3 @@ afterEvaluate {
         }
     }
 }
-
-//This is works
-//publishing {
-//    publications {
-//        create<MavenPublication>("release") {
-//            groupId = "com.example.appsample1" // e.g., com.example
-//            artifactId = "konnek-android"
-//            version = "1.0.0" // Your library's version
-//
-//            // For AAR publication
-//            artifact("$buildDir/outputs/aar/${project.name}-release.aar")
-//        }
-//    }
-//    repositories {
-//        maven {
-//            url = uri("$rootDir/repository") // Define a local repository directory
-//        }
-//    }
-//}
