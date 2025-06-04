@@ -1,11 +1,14 @@
 package com.example.appsample1.component
 
+import android.app.Activity
+import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.os.Bundle
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
@@ -15,6 +18,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
+import com.example.appsample1.support.AppLoggerCS
 import com.konneknative.R
 import kotlin.math.abs
 
@@ -30,6 +34,56 @@ class MovableFloatingActionButton(context: Context) : FrameLayout(context), View
 
     private val container: LinearLayout
 
+    private fun registerLifecycle(context: Context) {
+        val application = context.applicationContext as Application
+        application.registerActivityLifecycleCallbacks(object :
+            Application.ActivityLifecycleCallbacks {
+            override fun onActivityStarted(activity: Activity) {
+                // Start engine here if appropriate
+                AppLoggerCS.debugLog(
+                    "[FlutterEngineHelper][registerLifecycle][onActivityStarted] Activity started: ${activity.localClassName}"
+                )
+            }
+
+            override fun onActivityStopped(activity: Activity) {
+//                AppLoggerCS.debugLog(
+//                    "[FlutterEngineHelper][registerLifecycle][onActivityStopped] Activity stopped: ${activity.localClassName}"
+//                )
+            }
+
+            override fun onActivityDestroyed(activity: Activity) {
+//                AppLoggerCS.debugLog(
+//                    "[FlutterEngineHelper][registerLifecycle][onActivityDestroyed] Activity destroyed: ${activity.localClassName}"
+//                )
+            }
+
+            // Required empty implementations
+            override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+//                AppLoggerCS.debugLog(
+//                    "[FlutterEngineHelper][registerLifecycle][onActivityCreated] Activity created: ${activity.localClassName}"
+//                )
+            }
+
+            override fun onActivityResumed(activity: Activity) {
+//                AppLoggerCS.debugLog(
+//                    "[FlutterEngineHelper][registerLifecycle][onActivityResumed] Activity resumed: ${activity.localClassName}"
+//                )
+            }
+
+            override fun onActivityPaused(activity: Activity) {
+//                AppLoggerCS.debugLog(
+//                    "[FlutterEngineHelper][registerLifecycle][onActivityPaused] Activity paused: ${activity.localClassName}"
+//                )
+            }
+
+            override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+//                AppLoggerCS.debugLog(
+//                    "[FlutterEngineHelper][registerLifecycle][onActivitySaveInstanceState] Activity onActivitySaveInstanceState: ${activity.localClassName}"
+//                )
+            }
+        })
+    }
+
     init {
         layoutParams = LayoutParams(
             LayoutParams.WRAP_CONTENT,
@@ -40,7 +94,7 @@ class MovableFloatingActionButton(context: Context) : FrameLayout(context), View
         container = LinearLayout(context).apply {
             orientation = LinearLayout.HORIZONTAL
 //            setPadding(24, 24, 24, 24)
-            setPadding(12,12,12,12)
+            setPadding(12, 12, 12, 12)
             val drawableData =
                 ContextCompat.getDrawable(context, R.drawable.ic_konnek) // Optional background
 //            if (drawableData is BitmapDrawable) {
@@ -171,6 +225,11 @@ class MovableFloatingActionButton(context: Context) : FrameLayout(context), View
 
     fun scaleToFitWidth(bitmap: Bitmap, screenWidth: Int): Bitmap {
         val factor = screenWidth / bitmap.width.toFloat()
-        return Bitmap.createScaledBitmap(bitmap, screenWidth, (bitmap.height * factor).toInt(), true)
+        return Bitmap.createScaledBitmap(
+            bitmap,
+            screenWidth,
+            (bitmap.height * factor).toInt(),
+            true
+        )
     }
 }
