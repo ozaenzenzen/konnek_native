@@ -23,7 +23,7 @@ object KonnekNative {
         context: Context,
         id: String,
         secret: String,
-        flavorData: String,
+        flavorData: String = "production",
     ) {
         clientId = id
         clientSecret = secret
