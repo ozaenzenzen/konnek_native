@@ -3,7 +3,6 @@ package com.example.appsample1.support
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
-import android.widget.ImageButton
 
 fun String.base64ToBitmap(): Bitmap? {
     return try {

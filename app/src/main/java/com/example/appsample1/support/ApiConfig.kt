@@ -7,8 +7,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 class ApiConfig {
-
-
     companion object {
         private val BASE_URL = EnvironmentConfig.baseUrl() // Replace with your API base URL
 

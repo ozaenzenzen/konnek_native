@@ -6,7 +6,7 @@ import android.view.Gravity
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import com.example.appsample1.component.MovableFloatingActionButton4
+import com.example.appsample1.component.MovableFloatingActionButton
 import com.example.appsample1.support.base64ToBitmap
 import androidx.core.graphics.toColorInt
 import com.example.appsample1.FlutterEngineHelper.envInit
@@ -44,7 +44,7 @@ object KonnekNative {
         var textButton = ""
         var iconButton = ""
 
-        var btn = MovableFloatingActionButton4(context)
+        var btn = MovableFloatingActionButton(context)
 
         btn.apply {
             setBackgroundColor(bgColor.toColorInt())
@@ -72,8 +72,6 @@ object KonnekNative {
             if (datas != null) {
                 bgColor = datas["button_color"] as String? ?: ""
                 textColor = datas["text_button_color"] as String? ?: ""
-                AppLoggerCS.debugLog("datas[\"text_status\"] ${datas["text_status"]}")
-                AppLoggerCS.debugLog("datas[\"text_button\"] ${datas["text_button"]}")
                 if (datas["text_status"] == true) {
                     textButton = datas["text_button"] as String? ?: ""
                 } else {

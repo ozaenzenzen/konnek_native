@@ -20,8 +20,6 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.FlutterEngineCache
 import io.flutter.embedding.engine.dart.DartExecutor
 import io.flutter.plugin.common.MethodChannel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.json.JSONObject
 
 object FlutterEngineHelper {
@@ -36,53 +34,60 @@ object FlutterEngineHelper {
             Application.ActivityLifecycleCallbacks {
             override fun onActivityStarted(activity: Activity) {
                 // Start engine here if appropriate
-                Log.d("MyLifecycleManager", "Activity started: ${activity.localClassName}")
+//                AppLoggerCS.debugLog(
+//                    "[FlutterEngineHelper][registerLifecycle][onActivityStarted] Activity started: ${activity.localClassName}"
+//                )
             }
 
             override fun onActivityStopped(activity: Activity) {
 //                disposeEngine()
-                Log.d("MyLifecycleManager", "Activity stopped: ${activity.localClassName}")
+//                AppLoggerCS.debugLog(
+//                    "[FlutterEngineHelper][registerLifecycle][onActivityStopped] Activity stopped: ${activity.localClassName}"
+//                )
             }
 
             override fun onActivityDestroyed(activity: Activity) {
                 disposeEngine()
-                Log.d("MyLifecycleManager", "Activity destroyed: ${activity.localClassName}")
+//                AppLoggerCS.debugLog(
+//                    "[FlutterEngineHelper][registerLifecycle][onActivityDestroyed] Activity destroyed: ${activity.localClassName}"
+//                )
             }
 
             // Required empty implementations
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-                Log.d("MyLifecycleManager", "Activity created: ${activity.localClassName}")
+//                AppLoggerCS.debugLog(
+//                    "[FlutterEngineHelper][registerLifecycle][onActivityCreated] Activity created: ${activity.localClassName}"
+//                )
             }
 
             override fun onActivityResumed(activity: Activity) {
-                Log.d("MyLifecycleManager", "Activity resumed: ${activity.localClassName}")
+//                AppLoggerCS.debugLog(
+//                    "[FlutterEngineHelper][registerLifecycle][onActivityResumed] Activity resumed: ${activity.localClassName}"
+//                )
             }
 
             override fun onActivityPaused(activity: Activity) {
-                Log.d("MyLifecycleManager", "Activity paused: ${activity.localClassName}")
+//                AppLoggerCS.debugLog(
+//                    "[FlutterEngineHelper][registerLifecycle][onActivityPaused] Activity paused: ${activity.localClassName}"
+//                )
             }
 
             override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
-                Log.d(
-                    "MyLifecycleManager",
-                    "Activity onActivitySaveInstanceState: ${activity.localClassName}"
-                )
+//                AppLoggerCS.debugLog(
+//                    "[FlutterEngineHelper][registerLifecycle][onActivitySaveInstanceState] Activity onActivitySaveInstanceState: ${activity.localClassName}"
+//                )
             }
         })
     }
 
     fun disposeEngine() {
-        Log.d("disposeEngine", "Flutter Engine disposed")
         if (flutterEngine != null || FlutterEngineCache.getInstance().contains(ENGINE_ID)) {
             FlutterEngineCache.getInstance().clear();
-//            flutterEngine?.destroy()
-//            flutterEngine = null
         }
     }
 
     fun ensureEngine(context: Context) {
         try {
-            Log.d("ensureEngine", "flutterEngine: $flutterEngine")
             if (flutterEngine == null) {
                 flutterEngine = FlutterEngine(context.applicationContext).apply {
                     navigationChannel.setInitialRoute("/")
@@ -94,17 +99,15 @@ object FlutterEngineHelper {
                 }
                 registerLifecycle(context)
                 callConfigViaNative()
-                // println("[FlutterEngineHelper][ensureEngine]")
             }
         } catch (e: Exception) {
-            Log.d("ensureEngine", "exception: ${e.toString()}")
+            AppLoggerCS.debugLog("[FlutterEngineHelper][ensureEngine] exception: ${e.toString()}")
         }
     }
 
     var initConfigData: String = ""
 
     private fun callConfigViaNative() {
-        // println("[FlutterEngineHelper][callConfigViaNative]")
         KonnekService().getConfig(
             KonnekNative.clientId,
             onSuccess = { value: String ->
@@ -128,7 +131,7 @@ object FlutterEngineHelper {
             val value = jsonObject.get(key)
             when (value) {
                 is JSONObject -> map[key] = jsonStringToMap(value.toString())
-//                 is JSONArray -> map[key] = jsonArrayToList(value)
+                // is JSONArray -> map[key] = jsonArrayToList(value)
                 else -> map[key] = value
             }
         }
@@ -148,27 +151,17 @@ object FlutterEngineHelper {
             arguments["clientId"] = KonnekNative.clientId
             arguments["clientSecret"] = KonnekNative.clientSecret
             arguments["flavor"] = KonnekNative.flavor
-            // println("[FlutterEngineHelper][callConfig] arguments: $arguments")
             val sendData: String = Gson().toJson(arguments)
-            // println("[FlutterEngineHelper][callConfig] sendData: $sendData")
             channel.invokeMethod("clientConfigChannel", sendData)
             if (initConfigData != "") {
                 channel.invokeMethod("fetchConfigData", initConfigData)
             }
 
             channel.setMethodCallHandler { call, result ->
-//                println("[FlutterEngineHelper][onMethodCall]: 1 $call")
-//                println("[FlutterEngineHelper][onMethodCall]: 2 $result")
                 if (call.method == "configData") {
-//                    println("[FlutterEngineHelper][onMethodCall]: configData called")
-//                    println("[FlutterEngineHelper][onMethodCall]: call ${call.arguments}")
                     val map: Map<*, *> = call.arguments as Map<*, *>
-                    // println("[FlutterEngineHelper][onMethodCall]: call map $map")
-
                     result.success("success")
                 } else if (call.method == "disposeEngine") {
-//                    println("[FlutterEngineHelper][disposeEngine]")
-                    // disposeEngine()
                     result.success("success dispose engine")
                 } else {
                     result.notImplemented()
@@ -193,7 +186,7 @@ object FlutterEngineHelper {
                 launchFlutter(context)
             }
         } catch (e: Exception) {
-            Log.d("launchFlutter", "exception: ${e.toString()}")
+            AppLoggerCS.debugLog("[FlutterEngineHelper][launchFlutter] exception: ${e.toString()}")
         }
     }
 
