@@ -1,8 +1,6 @@
 package com.example.appsample1.support
 
-import com.example.appsample1.KonnekNative
 import com.google.gson.Gson
-import io.flutter.plugin.common.MethodCall
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
