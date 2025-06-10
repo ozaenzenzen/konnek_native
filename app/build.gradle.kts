@@ -76,3 +76,28 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
+
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("release") {
+                from(components["release"])
+                groupId = "com.konneknative"
+                artifactId = "konnek-android"
+                version = "1.0.0"
+            }
+            create<MavenPublication>("development") {
+                from(components["release"])
+                groupId = "com.konneknative"
+                artifactId = "konnek-android"
+                version = "1.0.0"
+            }
+        }
+
+        repositories {
+            maven {
+                url = uri("${rootProject.projectDir}/app/build")
+            }
+        }
+    }
+}
