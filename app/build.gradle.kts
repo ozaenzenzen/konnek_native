@@ -62,11 +62,7 @@ android {
 }
 
 dependencies {
-//    implementation(project(":flutter"))
-//    debugImplementation("com.konneknative.core:flutter_debug:1.0")
-//    releaseImplementation("com.konneknative.core:flutter_release:1.0")
     implementation("com.konneknative.core:flutter_release:1.0")
-//    add("profileImplementation", "com.konneknative.core:flutter_profile:1.0")
     api("com.squareup.retrofit2:converter-gson:2.9.0") {
         isTransitive = true
     }
@@ -84,63 +80,4 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-}
-
-val splitPOM: MavenPom.() -> Unit = {
-    name.set("Konnek Native")
-    packaging = "aar"
-    description.set("Official Konnek Android SDK")
-    // url.set("https://github.com/splitio/android-client")
-
-    licenses {
-        license {
-            name.set("The Apache License, Version 2.0")
-            url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
-        }
-    }
-
-    developers {
-        developer {
-            id.set("ozaenzenzen")
-            name.set("Fauzan Akmal Mahdi")
-            email.set("fauzan.akmal@sprintasia.co.id")
-        }
-    }
-
-    scm {
-        connection.set("scm:git:git@github.com:ozaenzenzen/konnek_native.git")
-        developerConnection.set("scm:git@github.com:ozaenzenzen/konnek_native.git")
-        url.set("https://github.com/ozaenzenzen/konnek_native.git")
-    }
-}
-
-afterEvaluate {
-    publishing {
-        publications {
-            create<MavenPublication>("release") {
-                from(components["release"])
-                groupId = "com.konneknative"
-                artifactId = "konnek-android"
-                version = "1.0.0"
-            }
-            create<MavenPublication>("development") {
-                from(components["release"])
-                groupId = "com.konneknative"
-                artifactId = "konnek-android"
-                version = "1.0.0"
-            }
-        }
-
-        repositories {
-            maven {
-                println("Message buildDir: ${buildDir}")  // String interpolation
-                println("Message rootProject: ${rootProject}")  // String interpolation
-                println("Message rootDir: ${rootDir}")  // String interpolation
-                println("Message rootProject: ${rootProject}")  // String interpolation
-                println("Message rootProject.buildDir: ${rootProject.buildDir}")  // String interpolation
-                println("Message rootProject.projectDir: ${rootProject.projectDir}")  // String interpolation
-                url = uri("${rootProject.projectDir}/app/build")
-            }
-        }
-    }
 }
