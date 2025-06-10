@@ -19,7 +19,6 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-//            isDebuggable = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -28,15 +27,11 @@ android {
         }
         debug {
             isMinifyEnabled = false
-//            isDebuggable = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
-//        create("profile") {
-//            initWith(getByName("debug"))
-//        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

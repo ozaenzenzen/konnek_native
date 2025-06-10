@@ -21,5 +21,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "AppSample1"
+rootProject.name = "KonnekNativeAndroid"
 include(":app")
