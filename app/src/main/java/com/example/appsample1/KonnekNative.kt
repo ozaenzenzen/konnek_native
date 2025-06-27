@@ -1,6 +1,7 @@
 package com.example.appsample1
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.view.Gravity
 import android.widget.FrameLayout
@@ -39,7 +40,7 @@ object KonnekNative {
 
     @JvmStatic
     fun getFloatingButton(context: Context): FrameLayout {
-        var bgColor = "#ffffff"
+        var bgColor = "#FFFFFF"
         var textColor = "#000000"
         var textButton = ""
         var iconButton = ""
@@ -69,9 +70,13 @@ object KonnekNative {
         }
 
         triggerFloatingUIChanges = { datas ->
-            if (datas != null) {
-                bgColor = datas["button_color"] as String? ?: ""
-                textColor = datas["text_button_color"] as String? ?: ""
+            if (datas["status"] != "true" || datas["status"] != true) {
+                if (datas["button_color"] != null) {
+                    bgColor = datas["button_color"] as String? ?: ""
+                }
+                if (datas["text_button_color"] != null) {
+                    textColor = datas["text_button_color"] as String? ?: ""
+                }
                 if (datas["text_status"] == true) {
                     textButton = datas["text_button"] as String? ?: ""
                 } else {

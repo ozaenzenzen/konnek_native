@@ -204,7 +204,11 @@ class MovableFloatingActionButton(context: Context) : FrameLayout(context), View
     }
 
     fun setButtonTextColor(colorHex: String) {
-        textView.setTextColor(colorHex.toColorInt())
+        try {
+            textView.setTextColor(colorHex.toColorInt())
+        } catch (e: Exception) {
+            textView.setTextColor("#000000".toColorInt())
+        }
     }
 
     fun setTextColor(color: Int) {
@@ -216,7 +220,14 @@ class MovableFloatingActionButton(context: Context) : FrameLayout(context), View
     }
 
     fun setButtonBackgroundColor(colorHex: String) {
-        setBackgroundColor(Color.parseColor(colorHex))
+        try {
+            // setBackgroundColor(Color.parseColor(colorHex))
+            setBackgroundColor(colorHex.toColorInt())
+        } catch (e: Exception) {
+            // setBackgroundColor(Color.parseColor("#ffffffff"))
+            setBackgroundColor("#FFFFFF".toColorInt())
+        }
+
     }
 
     companion object {
